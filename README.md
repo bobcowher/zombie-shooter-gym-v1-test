@@ -1,108 +1,102 @@
-# Zombie Shooter Gym - Installation Testing
+# Zombie Shooter Gym - Validation Repository
 
-This directory contains scripts to test the gym-zombie-shooter package installation.
+This repository validates the `gym-zombie-shooter` environment using the original custom Double DQN implementation from the zombie-shooter-ai-v1 project.
 
-## Setup
+## Purpose
 
-1. **Create a clean test environment:**
-   ```bash
-   conda create -n test-zombie-gym python=3.12
-   conda activate test-zombie-gym
-   ```
+Test whether the gym environment can successfully train an agent using the proven RL implementation from the original game project.
 
-2. **Build the package (from main directory):**
-   ```bash
-   cd /home/robertcowher/pythonprojects/gym-zombie-shooter-v1
-   ./build.sh
-   ```
+## Prerequisites
 
-## Testing Options
-
-### Option 1: Test Local Installation (Recommended First)
-
-Test the locally built package before uploading:
+The `gym-zombie-shooter` package must be installed separately:
 
 ```bash
-cd /home/robertcowher/pythonprojects/gym-zombie-shooter-v1-test
-conda activate test-zombie-gym
-./test_from_pypi.sh local
+# Install from PyPI (if published)
+pip install gym-zombie-shooter
+
+# OR install from local source
+pip install -e /path/to/zombie-shooter-gym-v1
 ```
 
-### Option 2: Test from TestPyPI
-
-After uploading to TestPyPI:
+## Quick Start
 
 ```bash
-conda activate test-zombie-gym
-./test_from_pypi.sh testpypi
+# 1. Activate your conda environment
+conda activate zombie-shooter-test
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. If using CUDA, install PyTorch with CUDA support
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
+
+# 4. Validate setup (optional)
+python validate_setup.py
+
+# 5. Run training
+python train.py
+
+# 6. Monitor training
+tensorboard --logdir runs/
+
+# 7. Test trained models
+python test_custom.py --render
 ```
 
-### Option 3: Test from Production PyPI
+## What's Included
 
-After publishing to PyPI:
+### Training Files
+- **train.py** - Custom Double DQN training script
+- **agent.py** - Double DQN agent with dual networks
+- **model.py** - ZombieNet CNN architecture
+- **buffer.py** - Replay buffer implementation
 
-```bash
-conda activate test-zombie-gym
-./test_from_pypi.sh pypi
-```
+### Testing Files
+- **test_custom.py** - Test custom trained models
+- **validate_setup.py** - Validate installation before training
+- **test_install.py** - Verify gym environment works
 
-## Manual Testing
+### Configuration
+- **requirements.txt** - Python dependencies
+- **CUSTOM_TRAINING.md** - Detailed documentation
 
-You can also run the test script directly:
+## Training Details
+
+The custom implementation uses:
+- **Algorithm**: Double DQN with two networks + target networks
+- **Architecture**: Custom CNN (ZombieNet)
+- **Replay Buffer**: 500K transitions (~15GB RAM)
+- **Frame Skip**: 4 frames
+- **Hidden Layer**: 1024 units
+- **Episodes**: 10,000
+- **Learning Rate**: 0.0001
+- **Batch Size**: 64
+
+See [CUSTOM_TRAINING.md](CUSTOM_TRAINING.md) for complete details.
+
+## Environment Testing
+
+To verify the gym environment installation:
 
 ```bash
 python test_install.py
 ```
 
-## What Gets Tested
+This tests:
+- ✓ Package import
+- ✓ Environment creation
+- ✓ reset() and step() functionality
+- ✓ Multi-episode execution
+- ✓ Observation/action spaces
+- ✓ Rewards and info dict
 
-The test script verifies:
-1. ✓ Package can be imported
-2. ✓ Environment can be created with gym.make()
-3. ✓ reset() and step() work correctly
-4. ✓ Multiple episodes can run
-5. ✓ Observation and action spaces are correct
-6. ✓ Rewards and info dict work
+## Documentation
 
-## Cleaning Up
+- **[CUSTOM_TRAINING.md](CUSTOM_TRAINING.md)** - Complete training guide and configuration details
 
-To remove the test environment:
+## Notes
 
-```bash
-conda deactivate
-conda env remove -n test-zombie-gym
-```
-
-## Expected Output
-
-When everything works, you should see:
-
-```
-============================================================
-Zombie Shooter Gym Installation Test
-============================================================
-Testing import...
-✓ Package imported successfully (version 0.1.0)
-
-Testing environment creation...
-✓ Environment created successfully
-  Observation space: Box(0, 255, (1, 128, 128), uint8)
-  Action space: Discrete(7)
-
-Testing reset and step...
-✓ Reset works (observation shape: (1, 128, 128))
-✓ Step works (reward: 0, terminated: False)
-
-Testing multiple episodes...
-  Episode 1: 50 steps, reward: 2.0, health: 5
-  Episode 2: 42 steps, reward: -1.0, health: 0
-  Episode 3: 50 steps, reward: 1.0, health: 4
-✓ Multiple episodes completed successfully
-
-============================================================
-Test Summary
-============================================================
-Passed: 4/4
-
-✓ All tests passed! Package is working correctly.
-```
+- Models are saved to `models/dqn1.pt` and `models/dqn2.pt` after each episode
+- TensorBoard logs go to `runs/` directory
+- Both model files are needed for testing
+- Training requires ~15GB RAM for replay buffer

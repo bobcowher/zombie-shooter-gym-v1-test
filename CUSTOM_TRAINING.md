@@ -52,17 +52,36 @@ The custom training uses the following hyperparameters (matching the original im
 
 ## How to Use
 
-### 1. Activate Environment
+### 1. Install gym-zombie-shooter
+
+The environment package must be installed first (not in requirements.txt):
+
 ```bash
-conda activate zombie-shooter-test
+# Install from PyPI (if published)
+pip install gym-zombie-shooter
+
+# OR install from local source
+pip install -e /path/to/zombie-shooter-gym-v1
 ```
 
-### 2. Validate Setup (Optional)
+### 2. Activate Environment and Install Dependencies
+
+```bash
+conda activate zombie-shooter-test
+pip install -r requirements.txt
+```
+
+**Note**: If using CUDA, install PyTorch with CUDA support:
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu129
+```
+
+### 3. Validate Setup (Optional)
 ```bash
 python validate_setup.py
 ```
 
-### 3. Train Custom Models
+### 4. Train Custom Models
 ```bash
 python train.py
 ```
@@ -73,12 +92,12 @@ Models will be saved to:
 
 TensorBoard logs will be saved to `runs/`
 
-### 4. Monitor Training
+### 5. Monitor Training
 ```bash
 tensorboard --logdir runs/
 ```
 
-### 5. Test Trained Models
+### 6. Test Trained Models
 ```bash
 # Test without rendering
 python test_custom.py
