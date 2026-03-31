@@ -4,3 +4,4 @@ models
 __pycache__
 runs
 nohup.out
+.claude/
