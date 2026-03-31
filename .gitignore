@@ -1,0 +1,6 @@
+logs
+trained_models
+models
+__pycache__
+runs
+nohup.out
